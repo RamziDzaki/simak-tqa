@@ -29,7 +29,7 @@
             <li><a href="{{ url('/admin/dashboard') }}"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
             <li><a href="{{ url('/admin/user') }}"><i class="fa-solid fa-users"></i> Kelola User</a></li>
             <li><a href="{{ url('/admin/mata-pelajaran') }}"><i class="fa-solid fa-book"></i> Mata Pelajaran</a></li>
-            <li><a href="#"><i class="fa-solid fa-door-open"></i> Kelola Kelas</a></li>
+            <li><a href="{{ url('/admin/kelas') }}"><i class="fa-solid fa-door-open"></i> Kelola Kelas</a></li>
             <li><a href="#"><i class="fa-regular fa-calendar-check"></i> Kelola Jadwal</a></li>
             <li><a href="#"><i class="fa-solid fa-chart-simple"></i> Laporan</a></li>
             <li>
