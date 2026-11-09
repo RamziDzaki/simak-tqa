@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController; // <-- TAMBAHKAN INI
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MataPelajaranController; // <-- TAMBAHKAN INI
 
 Route::get('/', function () {
     return redirect('/login');
@@ -22,10 +23,15 @@ Route::get('/admin/dashboard', function () {
     ]);
 })->middleware('auth');
 
-// RUTE KELOLA USER (TAMBAHAN BARU)
+// RUTE KELOLA USER
 Route::get('/admin/user', [UserController::class, 'index'])->middleware('auth');
 Route::post('/admin/user', [UserController::class, 'store'])->middleware('auth');
 Route::delete('/admin/user/{id}', [UserController::class, 'destroy'])->middleware('auth');
+
+// RUTE MATA PELAJARAN (TAMBAHAN BARU)
+Route::get('/admin/mata-pelajaran', [MataPelajaranController::class, 'index'])->middleware('auth');
+Route::post('/admin/mata-pelajaran', [MataPelajaranController::class, 'store'])->middleware('auth');
+Route::delete('/admin/mata-pelajaran/{id}', [MataPelajaranController::class, 'destroy'])->middleware('auth');
 
 // RUTE DASHBOARD GURU (SEMENTARA)
 Route::get('/guru/dashboard', function () {
