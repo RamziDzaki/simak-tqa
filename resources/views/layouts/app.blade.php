@@ -27,7 +27,7 @@
         <div class="brand"><i class="fa-solid fa-mosque" style="font-size: 1.5rem;"></i> TQA Darussalam</div>
         <ul class="menu">
             <li><a href="{{ url('/admin/dashboard') }}"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
-            <li><a href="#"><i class="fa-solid fa-users"></i> Kelola User</a></li>
+            <li><a href="{{ url('/admin/user') }}"><i class="fa-solid fa-users"></i> Kelola User</a></li>
             <li><a href="#"><i class="fa-solid fa-book"></i> Mata Pelajaran</a></li>
             <li><a href="#"><i class="fa-solid fa-door-open"></i> Kelola Kelas</a></li>
             <li><a href="#"><i class="fa-regular fa-calendar-check"></i> Kelola Jadwal</a></li>
