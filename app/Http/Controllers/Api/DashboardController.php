@@ -3,16 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Santri;
+use App\Models\Kelas;
+use App\Models\MataPelajaran;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        // Menghitung data asli dari database
+        $totalSantri = Santri::count();
+        $totalGuru = User::where('role', 'guru')->count();
+        $totalKelas = Kelas::count();
+        $totalMapel = MataPelajaran::count();
+
         return response()->json([
-            'total_santri' => 92,
-            'total_guru' => 6,
-            'total_kelas' => 4,
-            'total_mapel' => 3,
+            'total_santri' => $totalSantri,
+            'total_guru' => $totalGuru,
+            'total_kelas' => $totalKelas,
+            'total_mapel' => $totalMapel,
         ]);
     }
 }
