@@ -19,13 +19,11 @@
     .table th { background-color: #e6f4f0; color: #111; font-weight: 600; border-bottom: 2px solid #d1f0e5; }
     .table td { vertical-align: middle; font-weight: 500; }
     
-    /* Status Badges */
     .badge-berlangsung { background-color: #d1f0e5; color: #0b6b4f; padding: 8px 15px; border-radius: 6px; font-weight: 600; }
     .badge-akandatang { background-color: #fce4c4; color: #b36b00; padding: 8px 15px; border-radius: 6px; font-weight: 600; }
     .badge-selesai { background-color: #e2e8f0; color: #475569; padding: 8px 15px; border-radius: 6px; font-weight: 600; }
 </style>
 
-<!-- Header Dashboard -->
 <div class="dash-header">
     <div class="icon-box"><i class="fa-solid fa-border-all"></i></div>
     <div>
@@ -34,7 +32,6 @@
     </div>
 </div>
 
-<!-- Statistik Cards -->
 <div class="row g-4 mb-4">
     <div class="col-md-3">
         <div class="stat-card">
@@ -62,11 +59,10 @@
     </div>
 </div>
 
-<!-- Tabel Jadwal Hari Ini -->
 <div class="table-card">
     <div class="header-table">
         <h4>Jadwal Hari ini</h4>
-        <a href="#" class="text-dark text-decoration-none" style="font-weight: 500;">Lihat Semua <i class="fa-solid fa-chevron-down ms-1"></i></a>
+        <a href="{{ url('/admin/jadwal') }}" class="text-dark text-decoration-none" style="font-weight: 500;">Lihat Semua <i class="fa-solid fa-chevron-down ms-1"></i></a>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
@@ -80,10 +76,19 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Sementara kita isi kosong dulu, atau data dummy -->
-                <tr>
-                    <td colspan="5" class="text-center text-muted py-4">Belum ada jadwal untuk hari ini.</td>
-                </tr>
+                @forelse ($jadwalHariIni as $jadwal)
+                    <tr>
+                        <td>{{ $jadwal->waktu_mulai }} - {{ $jadwal->waktu_selesai }}</td>
+                        <td>{{ $jadwal->kelas }}</td>
+                        <td>{{ $jadwal->mata_pelajaran }}</td>
+                        <td>{{ $jadwal->guru }}</td>
+                        <td><span class="badge-berlangsung">Berlangsung</span></td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">Belum ada jadwal untuk hari ini.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
