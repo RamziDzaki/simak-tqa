@@ -38,8 +38,6 @@ Route::get('/admin/dashboard', function () {
 Route::get('/admin/user', [UserController::class, 'index'])->middleware('auth');
 Route::post('/admin/user', [UserController::class, 'store'])->middleware('auth');
 Route::delete('/admin/user/{id}', [UserController::class, 'destroy'])->middleware('auth');
-
-// RUTE EDIT & UPDATE USER (TAMBAHAN BARU)
 Route::get('/admin/user/{id}/edit', [UserController::class, 'edit'])->middleware('auth');
 Route::put('/admin/user/{id}', [UserController::class, 'update'])->middleware('auth');
 
@@ -52,6 +50,10 @@ Route::delete('/admin/mata-pelajaran/{id}', [MataPelajaranController::class, 'de
 Route::get('/admin/kelas', [KelasController::class, 'index'])->middleware('auth');
 Route::post('/admin/kelas', [KelasController::class, 'store'])->middleware('auth');
 Route::delete('/admin/kelas/{id}', [KelasController::class, 'destroy'])->middleware('auth');
+
+// RUTE EDIT & UPDATE KELAS (TAMBAHAN BARU)
+Route::get('/admin/kelas/{id}/edit', [KelasController::class, 'edit'])->middleware('auth');
+Route::put('/admin/kelas/{id}', [KelasController::class, 'update'])->middleware('auth');
 
 // RUTE KELOLA JADWAL
 Route::get('/admin/jadwal', [JadwalController::class, 'index'])->middleware('auth');

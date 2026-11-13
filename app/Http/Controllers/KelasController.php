@@ -32,6 +32,28 @@ class KelasController extends Controller
         return redirect('/admin/kelas')->with('success', 'Kelas berhasil ditambahkan!');
     }
 
+    // TAMBAHAN: FUNGSI UNTUK MENAMPILKAN HALAMAN EDIT
+    public function edit($id)
+    {
+        $kelas = Kelas::findOrFail($id);
+        return view('admin.edit_kelas', compact('kelas'));
+    }
+
+    // TAMBAHAN: FUNGSI UNTUK MENYIMPAN PERUBAHAN (UPDATE)
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_kelas' => 'required',
+            'kapasitas' => 'required|integer',
+            'status' => 'required'
+        ]);
+
+        $kelas = Kelas::findOrFail($id);
+        $kelas->update($request->all());
+
+        return redirect('/admin/kelas')->with('success', 'Kelas berhasil diupdate!');
+    }
+
     public function destroy($id)
     {
         Kelas::findOrFail($id)->delete();

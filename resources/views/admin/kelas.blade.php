@@ -35,8 +35,8 @@
 
 <!-- Tabs -->
 <div class="tabs mb-4">
-    <a href="#" class="tab-btn active">Kelas</a>
-    <a href="#" class="tab-btn inactive">Ruangan</a>
+    <a href="{{ url('/admin/kelas') }}" class="tab-btn active">Kelas</a>
+    <a href="{{ url('/admin/ruangan') }}" class="tab-btn inactive">Ruangan</a>
 </div>
 
 <div class="top-actions">
@@ -75,7 +75,10 @@
                     </td>
                     <td>
                         <div class="d-flex justify-content-center gap-2">
-                            <button class="btn-icon btn-edit"><i class="fa-solid fa-pencil"></i></button>
+                            <!-- TOMBOL EDIT SUDAH MENJADI <a> -->
+                            <a href="{{ url('/admin/kelas/'.$item->id.'/edit') }}" class="btn-icon btn-edit">
+                                <i class="fa-solid fa-pencil"></i>
+                            </a>
                             <form action="{{ url('/admin/kelas/'.$item->id) }}" method="POST" style="display:inline;">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn-icon btn-delete" onclick="return confirm('Yakin hapus kelas ini?')"><i class="fa-solid fa-trash"></i></button>
