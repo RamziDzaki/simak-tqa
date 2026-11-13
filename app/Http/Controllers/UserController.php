@@ -48,6 +48,54 @@ class UserController extends Controller
         return redirect('/admin/user?tab=' . $tab)->with('success', 'Data berhasil ditambahkan!');
     }
 
+    // TAMBAHAN: FUNGSI UNTUK MENAMPILKAN HALAMAN EDIT
+    public function edit($id, Request $request)
+    {
+        $tab = $request->query('tab', 'santri');
+        
+        if ($tab == 'santri') {
+            $item = Santri::findOrFail($id);
+        } else {
+            $item = User::findOrFail($id);
+        }
+
+        return view('admin.edit_user', compact('item', 'tab'));
+    }
+
+    // TAMBAHAN: FUNGSI UNTUK MENYIMPAN PERUBAHAN (UPDATE)
+    public function update(Request $request, $id)
+    {
+        $tab = $request->input('tab', 'santri');
+
+        if ($tab == 'santri') {
+            $item = Santri::findOrFail($id);
+            $item->update($request->only('nama', 'kelas', 'status'));
+        } else {
+            $item = User::findOrFail($id);
+            
+            $data = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'status' => $request->status,
+            ];
+
+            // Update password hanya jika diisi
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
+            }
+
+            if ($tab == 'guru') {
+                $data['nip_nik'] = $request->nip_nik;
+                $data['mata_pelajaran'] = $request->mata_pelajaran;
+            }
+
+            $item->update($data);
+        }
+
+        return redirect('/admin/user?tab=' . $tab)->with('success', 'Data berhasil diupdate!');
+    }
+
     public function destroy($id, Request $request)
     {
         $tab = $request->query('tab', 'santri');

@@ -42,18 +42,40 @@
     </button>
 </div>
 
+<div class="d-flex gap-3 mb-3">
+    <div class="input-group" style="max-width: 400px;">
+        <span class="input-group-text bg-white"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <input type="text" class="form-control" placeholder="Cari {{ $tab }}...">
+    </div>
+    @if($tab == 'santri')
+        <select class="form-select" style="max-width: 200px;"><option>Semua Kelas</option></select>
+    @endif
+    <select class="form-select" style="max-width: 200px;"><option>Semua Status</option></select>
+</div>
+
 <div class="table-container">
     <table class="table">
         <thead>
             <tr>
                 <th>NO</th>
                 <th>Nama {{ ucfirst($tab) }}</th>
-                @if($tab == 'santri')
+                @if($tab == 'guru')
+                    <th>NIP/NIK</th>
+                    <th>Mata Pelajaran</th>
+                    <th>Jenis Kelamin</th>
+                @elseif($tab == 'admin')
+                    <th>Jenis Kelamin</th>
+                    <th>Role</th>
+                @elseif($tab == 'santri')
                     <th>Kelas</th>
-                @else
+                @endif
+
+                @if($tab != 'santri')
                     <th>Email</th>
                 @endif
+
                 <th>Status</th>
+
                 @if($tab == 'santri')
                     <th>QR Barcode</th>
                 @endif
@@ -65,27 +87,46 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->nama ?? $item->name }}</td>
-                    @if($tab == 'santri')
+
+                    @if($tab == 'guru')
+                        <td>{{ $item->nip_nik ?? '-' }}</td>
+                        <td>{{ $item->mata_pelajaran ?? '-' }}</td>
+                        <td>{{ $item->jenis_kelamin ?? '-' }}</td>
+                    @elseif($tab == 'admin')
+                        <td>{{ $item->jenis_kelamin ?? '-' }}</td>
+                        <td>{{ ucfirst($item->role) }}</td>
+                    @elseif($tab == 'santri')
                         <td>{{ $item->kelas }}</td>
-                    @else
+                    @endif
+
+                    @if($tab != 'santri')
                         <td>{{ $item->email }}</td>
                     @endif
+
                     <td>
                         <span class="{{ ($item->status ?? 'Aktif') == 'Aktif' ? 'badge-aktif' : 'badge-nonaktif' }}">{{ $item->status ?? 'Aktif' }}</span>
                     </td>
+
                     @if($tab == 'santri')
                         <td>
-                            <button class="btn-icon btn-qr"><i class="fa-solid fa-qrcode"></i></button>
-                            <button class="btn-icon btn-print"><i class="fa-solid fa-print"></i></button>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn-icon btn-qr"><i class="fa-solid fa-qrcode"></i></button>
+                                <button class="btn-icon btn-print"><i class="fa-solid fa-print"></i></button>
+                            </div>
                         </td>
                     @endif
+
                     <td>
-                        <button class="btn-icon btn-edit"><i class="fa-solid fa-pencil"></i></button>
-                        <form action="{{ url('/admin/user/'.$item->id.'?tab='.$tab) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-icon btn-delete" onclick="return confirm('Yakin hapus data ini?')"><i class="fa-solid fa-trash"></i></button>
-                        </form>
+                        <div class="d-flex justify-content-center gap-2">
+                            <!-- TOMBOL EDIT SUDAH MENJADI LINK -->
+                            <a href="{{ url('/admin/user/'.$item->id.'/edit?tab='.$tab) }}" class="btn-icon btn-edit"><i class="fa-solid fa-pencil"></i></a>
+                            
+                            <form action="{{ url('/admin/user/'.$item->id) }}?tab={{ $tab }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn-icon btn-delete" onclick="return confirm('Yakin hapus data ini?')"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @empty
@@ -141,6 +182,20 @@
                           <option value="perempuan">Perempuan</option>
                       </select>
                   </div>
+                  @if($tab == 'guru')
+                  <div class="mb-3">
+                      <label class="form-label">NIP/NIK</label>
+                      <input type="text" name="nip_nik" class="form-control">
+                  </div>
+                  <div class="mb-3">
+                      <label class="form-label">Mata Pelajaran</label>
+                      <select name="mata_pelajaran" class="form-select">
+                          <option value="Tahsin">Tahsin</option>
+                          <option value="Tafsir">Tafsir</option>
+                          <option value="Tahfiz">Tahfiz</option>
+                      </select>
+                  </div>
+                  @endif
               @endif
               <div class="mb-3">
                   <label class="form-label">Status</label>
@@ -159,6 +214,5 @@
   </div>
 </div>
 
-<!-- Bootstrap JS (PENTING AGAR MODAL BISA TERBUKA) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @endsection

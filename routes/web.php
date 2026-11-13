@@ -13,11 +13,15 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
+// RUTE LOGIN & REGISTER
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// RUTE DASHBOARD
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+
+// RUTE DASHBOARD ADMIN
 Route::get('/admin/dashboard', function () {
     $hariIni = Carbon::now()->locale('id')->isoFormat('dddd');
 
@@ -34,6 +38,10 @@ Route::get('/admin/dashboard', function () {
 Route::get('/admin/user', [UserController::class, 'index'])->middleware('auth');
 Route::post('/admin/user', [UserController::class, 'store'])->middleware('auth');
 Route::delete('/admin/user/{id}', [UserController::class, 'destroy'])->middleware('auth');
+
+// RUTE EDIT & UPDATE USER (TAMBAHAN BARU)
+Route::get('/admin/user/{id}/edit', [UserController::class, 'edit'])->middleware('auth');
+Route::put('/admin/user/{id}', [UserController::class, 'update'])->middleware('auth');
 
 // RUTE MATA PELAJARAN
 Route::get('/admin/mata-pelajaran', [MataPelajaranController::class, 'index'])->middleware('auth');
@@ -65,12 +73,12 @@ Route::get('/admin/absensi-guru', function () {
     return view('admin.absensi_guru');
 })->middleware('auth');
 
-// RUTE NILAI (TAMBAHAN BARU)
+// RUTE NILAI
 Route::get('/admin/nilai', function () {
     return view('admin.nilai');
 })->middleware('auth');
 
-// RUTE DASHBOARD GURU (SEMENTARA)
+// RUTE DASHBOARD GURU
 Route::get('/guru/dashboard', function () {
-    return "<h1>Halaman Dashboard Guru</h1>";
+    return view('guru.dashboard');
 })->middleware('auth');
