@@ -61,7 +61,9 @@
                     </td>
                     <td>
                         <div class="d-flex justify-content-center gap-2">
-                            <button class="btn-icon btn-edit"><i class="fa-solid fa-pencil"></i></button>
+                            <!-- TOMBOL EDIT SUDAH MENJADI LINK -->
+                            <a href="{{ url('/admin/mata-pelajaran/'.$item->id.'/edit') }}" class="btn-icon btn-edit"><i class="fa-solid fa-pencil"></i></a>
+                            
                             <form action="{{ url('/admin/mata-pelajaran/'.$item->id) }}" method="POST" style="display:inline;">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn-icon btn-delete" onclick="return confirm('Yakin hapus data ini?')"><i class="fa-solid fa-trash"></i></button>

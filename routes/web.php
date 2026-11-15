@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\RuanganController;
 use App\Models\Jadwal;
 use Carbon\Carbon;
 
@@ -45,15 +46,22 @@ Route::put('/admin/user/{id}', [UserController::class, 'update'])->middleware('a
 Route::get('/admin/mata-pelajaran', [MataPelajaranController::class, 'index'])->middleware('auth');
 Route::post('/admin/mata-pelajaran', [MataPelajaranController::class, 'store'])->middleware('auth');
 Route::delete('/admin/mata-pelajaran/{id}', [MataPelajaranController::class, 'destroy'])->middleware('auth');
+Route::get('/admin/mata-pelajaran/{id}/edit', [MataPelajaranController::class, 'edit'])->middleware('auth');
+Route::put('/admin/mata-pelajaran/{id}', [MataPelajaranController::class, 'update'])->middleware('auth');
 
 // RUTE KELOLA KELAS
 Route::get('/admin/kelas', [KelasController::class, 'index'])->middleware('auth');
 Route::post('/admin/kelas', [KelasController::class, 'store'])->middleware('auth');
 Route::delete('/admin/kelas/{id}', [KelasController::class, 'destroy'])->middleware('auth');
-
-// RUTE EDIT & UPDATE KELAS (TAMBAHAN BARU)
 Route::get('/admin/kelas/{id}/edit', [KelasController::class, 'edit'])->middleware('auth');
 Route::put('/admin/kelas/{id}', [KelasController::class, 'update'])->middleware('auth');
+
+// RUTE KELOLA RUANGAN (TAMBAHAN BARU)
+Route::get('/admin/ruangan', [RuanganController::class, 'index'])->middleware('auth');
+Route::post('/admin/ruangan', [RuanganController::class, 'store'])->middleware('auth');
+Route::get('/admin/ruangan/{id}/edit', [RuanganController::class, 'edit'])->middleware('auth');
+Route::put('/admin/ruangan/{id}', [RuanganController::class, 'update'])->middleware('auth');
+Route::delete('/admin/ruangan/{id}', [RuanganController::class, 'destroy'])->middleware('auth');
 
 // RUTE KELOLA JADWAL
 Route::get('/admin/jadwal', [JadwalController::class, 'index'])->middleware('auth');
