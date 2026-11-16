@@ -74,7 +74,7 @@ class GuruController extends Controller
         return view('guru.pilih_absensi', compact('guru', 'jadwal', 'pertemuan'));
     }
 
-    // Halaman Scan QR & Daftar Hadir
+       // Halaman Scan QR & Daftar Hadir
     public function scanAbsensi($id, $pertemuan_id)
     {
         $guru = Auth::user();
@@ -86,4 +86,40 @@ class GuruController extends Controller
 
         return view('guru.scan_absensi', compact('guru', 'jadwal', 'pertemuan', 'santris', 'absensi'));
     }
-}
+
+    // Halaman Absensi Manual (TAMBAHAN)
+    public function absensiManual($id, $pertemuan_id)
+    {
+        $guru = Auth::user();
+        $jadwal = Jadwal::findOrFail($id);
+        $pertemuan = Pertemuan::findOrFail($pertemuan_id);
+
+        $santris = Santri::where('kelas', $jadwal->kelas)->get();
+        $absensi = AbsensiSantri::where('pertemuan_id', $pertemuan_id)->get()->keyBy('santri_id');
+
+        return view('guru.absensi_manual', compact('guru', 'jadwal', 'pertemuan', 'santris', 'absensi'));
+    }
+
+    // Simpan Absensi Manual (TAMBAHAN)
+    public function simpanAbsensiManual(Request $request, $id, $pertemuan_id)
+    {
+        $request->validate([
+            'status' => 'required|array',
+            'status.*' => 'in:Hadir,Izin,Sakit,Alfa',
+        ]);
+
+        AbsensiSantri::where('pertemuan_id', $pertemuan_id)->delete();
+
+        foreach ($request->status as $santri_id => $status) {
+            AbsensiSantri::create([
+                'pertemuan_id' => $pertemuan_id,
+                'santri_id' => $santri_id,
+                'status' => $status,
+                'keterangan' => 'Input Manual',
+            ]);
+        }
+
+        return redirect('/guru/jadwal/'.$id.'/absensi/'.$pertemuan_id.'/manual')
+            ->with('success', 'Absensi berhasil disimpan!');
+    }
+} // <-- Kurung penutup class

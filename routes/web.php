@@ -104,6 +104,10 @@ Route::get('/guru/jadwal/{id}/pertemuan', [App\Http\Controllers\GuruController::
 Route::get('/guru/jadwal/{id}/absensi/{pertemuan_id}', [App\Http\Controllers\GuruController::class, 'pilihMetodeAbsensi'])->middleware('auth');
 Route::get('/guru/jadwal/{id}/absensi/{pertemuan_id}/scan', [App\Http\Controllers\GuruController::class, 'scanAbsensi'])->middleware('auth');
 
+// RUTE ABSENSI MANUAL
+Route::get('/guru/jadwal/{id}/absensi/{pertemuan_id}/manual', [App\Http\Controllers\GuruController::class, 'absensiManual'])->middleware('auth');
+Route::post('/guru/jadwal/{id}/absensi/{pertemuan_id}/manual', [App\Http\Controllers\GuruController::class, 'simpanAbsensiManual'])->middleware('auth');
+
 // RUTE QR CODE SANTRI & SCAN
 Route::get('/admin/santri/{id}/qr', [App\Http\Controllers\UserController::class, 'showQr'])->middleware('auth');
 Route::post('/guru/absensi/scan', [App\Http\Controllers\GuruController::class, 'processScan'])->middleware('auth');

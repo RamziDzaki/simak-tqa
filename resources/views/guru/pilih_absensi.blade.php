@@ -46,7 +46,7 @@
             <div class="pilih-icon"><i class="fa-solid fa-user-plus"></i></div>
             <h4 class="pilih-title">Absensi Manual</h4>
             <p class="pilih-desc">Input kehadiran santri secara manual</p>
-            <a href="#" class="btn-pilih">Input Manual</a>
+            <a href="{{ url('/guru/jadwal/'.$jadwal->id.'/absensi/'.$pertemuan->id.'/manual') }}" class="btn-pilih">Input Manual</a>
         </div>
     </div>
 </div>
