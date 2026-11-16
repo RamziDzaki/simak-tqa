@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 
 class GuruController extends Controller
 {
-    // Dashboard Guru
     public function dashboard()
     {
         $guru = Auth::user();
@@ -43,7 +42,6 @@ class GuruController extends Controller
         return view('guru.dashboard', compact('guru', 'jadwalHariIni', 'totalMapel', 'jadwalSelesai', 'hariIni'));
     }
 
-    // Halaman Daftar Jadwal Mengajar
     public function jadwalIndex()
     {
         $guru = Auth::user();
@@ -51,7 +49,6 @@ class GuruController extends Controller
         return view('guru.jadwal', compact('guru', 'jadwals'));
     }
 
-    // Halaman Daftar Pertemuan per Jadwal
     public function pertemuanIndex($id)
     {
         $guru = Auth::user();
@@ -65,7 +62,6 @@ class GuruController extends Controller
         return view('guru.pertemuan', compact('guru', 'jadwal', 'pertemuans'));
     }
 
-    // Halaman Pilih Metode Absensi
     public function pilihMetodeAbsensi($id, $pertemuan_id)
     {
         $guru = Auth::user();
@@ -74,7 +70,6 @@ class GuruController extends Controller
         return view('guru.pilih_absensi', compact('guru', 'jadwal', 'pertemuan'));
     }
 
-       // Halaman Scan QR & Daftar Hadir
     public function scanAbsensi($id, $pertemuan_id)
     {
         $guru = Auth::user();
@@ -87,7 +82,6 @@ class GuruController extends Controller
         return view('guru.scan_absensi', compact('guru', 'jadwal', 'pertemuan', 'santris', 'absensi'));
     }
 
-    // Halaman Absensi Manual (TAMBAHAN)
     public function absensiManual($id, $pertemuan_id)
     {
         $guru = Auth::user();
@@ -100,7 +94,6 @@ class GuruController extends Controller
         return view('guru.absensi_manual', compact('guru', 'jadwal', 'pertemuan', 'santris', 'absensi'));
     }
 
-    // Simpan Absensi Manual (TAMBAHAN)
     public function simpanAbsensiManual(Request $request, $id, $pertemuan_id)
     {
         $request->validate([
@@ -122,4 +115,91 @@ class GuruController extends Controller
         return redirect('/guru/jadwal/'.$id.'/absensi/'.$pertemuan_id.'/manual')
             ->with('success', 'Absensi berhasil disimpan!');
     }
-} // <-- Kurung penutup class
+
+    public function absensiIndex()
+    {
+        $guru = Auth::user();
+        $jadwals = Jadwal::where('guru', $guru->name)->get();
+        
+        foreach ($jadwals as $j) {
+            $absensi = AbsensiGuru::where('user_id', $guru->id)
+                ->where('jadwal_id', $j->id)
+                ->where('tanggal', Carbon::now()->toDateString())
+                ->first();
+            $j->sudah_absen = $absensi ? true : false;
+
+            $waktuMulai = Carbon::parse($j->waktu_mulai);
+            $waktuSelesai = Carbon::parse($j->waktu_selesai);
+            $sekarang = Carbon::now();
+
+            if ($sekarang->between($waktuMulai, $waktuSelesai)) {
+                $j->status = 'Sedang Berlangsung';
+                $j->warna = 'bg-success-subtle text-success';
+            } elseif ($sekarang->lt($waktuMulai)) {
+                $j->status = 'Belum Dimulai';
+                $j->warna = 'bg-danger-subtle text-danger';
+            } else {
+                $j->status = 'Selesai';
+                $j->warna = 'bg-secondary-subtle text-secondary';
+            }
+        }
+
+        return view('guru.absensi_index', compact('guru', 'jadwals'));
+    }
+
+    public function absenGuru($id)
+    {
+        $guru = Auth::user();
+        $jadwal = Jadwal::findOrFail($id);
+
+        $cek = AbsensiGuru::where('user_id', $guru->id)
+            ->where('jadwal_id', $id)
+            ->where('tanggal', Carbon::now()->toDateString())
+            ->first();
+
+        if ($cek) {
+            return back()->with('error', 'Anda sudah absen untuk jadwal ini hari ini.');
+        }
+
+        AbsensiGuru::create([
+            'user_id' => $guru->id,
+            'jadwal_id' => $id,
+            'tanggal' => Carbon::now()->toDateString(),
+            'status' => 'Hadir',
+            'keterangan' => 'Absen via guru',
+        ]);
+
+        return back()->with('success', 'Absensi berhasil dicatat!');
+    }
+
+    public function absensiDetail($id)
+    {
+        $guru = Auth::user();
+        $jadwal = Jadwal::findOrFail($id);
+
+        $absensi = AbsensiGuru::where('user_id', $guru->id)
+            ->where('jadwal_id', $id)
+            ->where('tanggal', Carbon::now()->toDateString())
+            ->first();
+
+        $waktuMulai = Carbon::parse($jadwal->waktu_mulai);
+        $waktuSelesai = Carbon::parse($jadwal->waktu_selesai);
+        $sekarang = Carbon::now();
+
+        if ($sekarang->between($waktuMulai, $waktuSelesai)) {
+            $jadwal->status = 'Sedang Berlangsung';
+            $jadwal->warna = 'bg-success-subtle text-success';
+        } elseif ($sekarang->lt($waktuMulai)) {
+            $jadwal->status = 'Belum Dimulai';
+            $jadwal->warna = 'bg-danger-subtle text-danger';
+        } else {
+            $jadwal->status = 'Selesai';
+            $jadwal->warna = 'bg-secondary-subtle text-secondary';
+        }
+
+        $sudah_absen = $absensi ? true : false;
+        $pertemuans = Pertemuan::where('jadwal_id', $id)->orderBy('pertemuan_ke', 'asc')->get();
+
+        return view('guru.absensi_detail', compact('guru', 'jadwal', 'sudah_absen', 'pertemuans'));
+    }
+}

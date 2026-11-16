@@ -35,7 +35,7 @@
       <ul class="menu">
     <li><a href="{{ url('/guru/dashboard') }}"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
     <li><a href="{{ url('/guru/jadwal') }}"><i class="fa-solid fa-calendar-check"></i> Jadwal Mengajar</a></li>
-<li><a href="#"><i class="fa-solid fa-qrcode"></i> Absensi Guru</a></li>
+<li><a href="{{ url('/guru/absensi') }}"><i class="fa-solid fa-user-check"></i> Absensi Guru</a></li>
     <li><a href="#"><i class="fa-solid fa-file-lines"></i> Kelola Nilai</a></li>
     <li><a href="#"><i class="fa-solid fa-book"></i> Subbab Pelajaran</a></li>
     <li>
