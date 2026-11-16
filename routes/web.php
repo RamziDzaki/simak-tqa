@@ -68,10 +68,11 @@ Route::delete('/admin/ruangan/{id}', [RuanganController::class, 'destroy'])->mid
 Route::get('/admin/jadwal', [JadwalController::class, 'index'])->middleware('auth');
 Route::get('/admin/jadwal/{id}/atur', [JadwalController::class, 'create'])->middleware('auth');
 Route::post('/admin/jadwal', [JadwalController::class, 'store'])->middleware('auth');
-Route::get('/admin/jadwal/{id}/edit', [JadwalController::class, 'edit'])->middleware('auth');   // <-- TAMBAH INI
-Route::put('/admin/jadwal/{id}', [JadwalController::class, 'update'])->middleware('auth');      // <-- TAMBAH INI
+Route::get('/admin/jadwal/{id}/edit', [JadwalController::class, 'edit'])->middleware('auth');
+Route::put('/admin/jadwal/{id}', [JadwalController::class, 'update'])->middleware('auth');
 Route::delete('/admin/jadwal/{id}', [JadwalController::class, 'destroy'])->middleware('auth');
-
+Route::post('/admin/jadwal/{id}/generate-pertemuan', [JadwalController::class, 'generatePertemuan'])->middleware('auth'); // <-- TAMBAH INI
+Route::get('/admin/jadwal/{id}/daftar-pertemuan', [JadwalController::class, 'daftarPertemuan'])->middleware('auth');    // <-- TAMBAH INI
 // RUTE LAPORAN
 Route::get('/admin/laporan', function () {
     return view('admin.laporan');
@@ -95,6 +96,4 @@ Route::get('/admin/nilai', function () {
 })->middleware('auth');
 
 // RUTE DASHBOARD GURU
-Route::get('/guru/dashboard', function () {
-    return view('guru.dashboard');
-})->middleware('auth');
+Route::get('/guru/dashboard', [App\Http\Controllers\GuruController::class, 'dashboard'])->middleware('auth');

@@ -10,12 +10,14 @@ class Pertemuan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kelas', 
-        'tanggal', 
-        'hari', 
-        'waktu_mulai', 
-        'waktu_selesai', 
-        'mata_pelajaran', 
-        'guru'
+        'jadwal_id',
+        'tanggal',
+        'pertemuan_ke',
+        'sub_materi',
     ];
+
+    public function jadwal()
+    {
+        return $this->belongsTo(Jadwal::class);
+    }
 }

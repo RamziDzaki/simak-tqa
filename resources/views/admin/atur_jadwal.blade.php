@@ -7,7 +7,6 @@
     .btn-back { background-color: #d1f0e5; color: #0b6b4f; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; text-decoration: none; border: none; }
     .title-area h2 { margin: 0; font-weight: 700; font-size: 1.5rem; }
     .title-area p { margin: 0; color: #555; font-size: 0.9rem; }
-    .btn-simpan-header { background-color: #0b6b4f; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
     .nav-tabs-custom { border-bottom: none; margin-bottom: 20px; gap: 10px; }
     .nav-tabs-custom .nav-link { border: none; background-color: #e2e8f0; color: #475569; border-radius: 8px; padding: 10px 20px; font-weight: 600; }
     .nav-tabs-custom .nav-link.active { background-color: #0b6b4f; color: white; }
@@ -34,9 +33,9 @@
             <p>Kelola data Jadwal TQA Darussalam</p>
         </div>
     </div>
-    <!-- Tombol Simpan Periode -->
-    <button class="btn-simpan-header" onclick="alert('Fitur Simpan Periode akan diimplementasikan selanjutnya.')">
-        <i class="fa-regular fa-floppy-disk"></i> Simpan Periode
+    <!-- TAMBAHAN: Tombol Simpan Jadwal -->
+    <button type="submit" form="formPeriode" class="btn btn-success" style="background-color: #0b6b4f; padding: 10px 20px; border-radius: 8px; font-weight: 600;">
+        <i class="fa-regular fa-floppy-disk me-2"></i> Simpan Jadwal
     </button>
 </div>
 
@@ -54,7 +53,7 @@
         <a class="nav-link active" href="#">Pengaturan Jadwal</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="#">{{ $jadwals->count() }} Pertemuan</a>
+        <a class="nav-link" href="{{ url('/admin/jadwal/'.$kelas->id.'/daftar-pertemuan') }}">Daftar Pertemuan</a>
     </li>
 </ul>
 
@@ -89,33 +88,35 @@
     </div>
 </div>
 
-<!-- Card Periode Pembelajaran -->
-<div class="periode-card">
-    <div class="fw-bold me-3">Periode Pembelajaran</div>
-    <div>
-        <label class="info-label">Tanggal Mulai</label>
-        <input type="text" id="tgl_mulai" name="tgl_mulai" class="form-control" style="width: 220px;" placeholder="Pilih Tanggal">
+<!-- Card Periode Pembelajaran (Sudah dibungkus form) -->
+<form id="formPeriode" action="{{ url('/admin/jadwal/'.$kelas->id.'/generate-pertemuan') }}" method="POST">
+    @csrf
+    <div class="periode-card">
+        <div class="fw-bold me-3">Periode Pembelajaran</div>
+        <div>
+            <label class="info-label">Tanggal Mulai</label>
+            <input type="text" id="tgl_mulai" name="tgl_mulai" class="form-control" style="width: 220px;" placeholder="Pilih Tanggal" required>
+        </div>
+        <div>
+            <label class="info-label">Tanggal Selesai</label>
+            <input type="text" id="tgl_selesai" name="tgl_selesai" class="form-control" style="width: 220px;" placeholder="Pilih Tanggal" required>
+        </div>
+        <div>
+            <label class="info-label">Jumlah Pertemuan</label>
+            <input type="number" name="jumlah_pertemuan" class="form-control" style="width: 100px;" value="16" required>
+        </div>
+        <div class="ms-auto mt-4">
+            <button type="submit" class="btn btn-success" style="background-color: #0b6b4f;">
+                <i class="fa-solid fa-rotate me-2"></i> Generate Jadwal
+            </button>
+        </div>
     </div>
-    <div>
-        <label class="info-label">Tanggal Selesai</label>
-        <input type="text" id="tgl_selesai" name="tgl_selesai" class="form-control" style="width: 220px;" placeholder="Pilih Tanggal">
-    </div>
-    <div>
-        <label class="info-label">Jumlah Pertemuan</label>
-        <input type="number" class="form-control" style="width: 100px;" value="16">
-    </div>
-    <div class="ms-auto mt-4">
-        <button class="btn btn-success" style="background-color: #0b6b4f;" onclick="alert('Fitur Generate Jadwal akan diimplementasikan selanjutnya.')">
-            <i class="fa-solid fa-rotate me-2"></i> Generate Jadwal
-        </button>
-    </div>
-</div>
+</form>
 
 <!-- Card Tabel Jadwal -->
 <div class="table-card">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold m-0">Jadwal Pembelajaran</h5>
-        <!-- Tombol Tambah memicu Modal -->
         <button class="btn btn-success" style="background-color: #0b6b4f;" data-bs-toggle="modal" data-bs-target="#modalTambahJadwal">
             <i class="fa-solid fa-plus me-1"></i> Tambah Jadwal
         </button>
@@ -140,7 +141,6 @@
                         <td>{{ $j->mata_pelajaran }}</td>
                         <td>{{ $j->guru }}</td>
                         <td>
-                            <!-- Tombol Edit -->
                             <button class="btn-edit-custom btn-edit-jadwal" 
                                     data-id="{{ $j->id }}" 
                                     data-mapel="{{ $j->mata_pelajaran }}" 
@@ -153,7 +153,6 @@
                                 <i class="fa-solid fa-pen"></i>
                             </button>
 
-                            <!-- Tombol Hapus -->
                             <form action="{{ url('/admin/jadwal/'.$j->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus jadwal ini?')">
                                 @csrf
                                 @method('DELETE')
@@ -186,8 +185,8 @@
                         <select name="mata_pelajaran" class="form-select" required>
                             <option value="">-- Pilih Mata Pelajaran --</option>
                             @foreach ($mapels as $mapel)
-    <option value="{{ $mapel->nama }}">{{ $mapel->nama }}</option>
-@endforeach
+                                <option value="{{ $mapel->nama }}">{{ $mapel->nama }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
@@ -247,8 +246,8 @@
                         <label class="form-label">Mata Pelajaran</label>
                         <select name="mata_pelajaran" id="edit_mapel" class="form-select" required>
                             @foreach ($mapels as $mapel)
-    <option value="{{ $mapel->nama }}">{{ $mapel->nama }}</option>
-@endforeach
+                                <option value="{{ $mapel->nama }}">{{ $mapel->nama }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
@@ -295,8 +294,21 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Flatpickr
-        flatpickr("#tgl_mulai", { locale: "id", dateFormat: "l, j F Y", defaultDate: "2027-10-12", altInput: true, altFormat: "l, j F Y" });
-        flatpickr("#tgl_selesai", { locale: "id", dateFormat: "l, j F Y", defaultDate: "2028-10-12", altInput: true, altFormat: "l, j F Y" });
+       flatpickr("#tgl_mulai", {
+    locale: "id",
+    altInput: true,
+    altFormat: "l, j F Y", // Tampilan: Rabu, 1 Juli 2026
+    dateFormat: "Y-m-d",   // Nilai yang dikirim ke server: 2026-07-01
+    defaultDate: "2027-10-12"
+});
+
+flatpickr("#tgl_selesai", {
+    locale: "id",
+    altInput: true,
+    altFormat: "l, j F Y",
+    dateFormat: "Y-m-d",
+    defaultDate: "2028-10-12"
+});
 
         // Script untuk mengisi Modal Edit otomatis
         const editButtons = document.querySelectorAll('.btn-edit-jadwal');
@@ -309,10 +321,7 @@
                 const mulai = this.getAttribute('data-mulai');
                 const selesai = this.getAttribute('data-selesai');
 
-                // Set action URL form edit
                 document.getElementById('formEditJadwal').action = '/admin/jadwal/' + id;
-
-                // Isi field modal edit
                 document.getElementById('edit_mapel').value = mapel;
                 document.getElementById('edit_guru').value = guru;
                 document.getElementById('edit_hari').value = hari;
