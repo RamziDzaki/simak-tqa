@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Santri;
 use Illuminate\Support\Facades\Hash;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class UserController extends Controller
 {
     public function index(Request $request)

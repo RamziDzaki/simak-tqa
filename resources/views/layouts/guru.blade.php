@@ -32,18 +32,18 @@
     <!-- SIDEBAR GURU -->
     <div class="sidebar">
         <div class="brand"><i class="fa-solid fa-mosque" style="font-size: 1.5rem;"></i> TQA Darussalam</div>
-        <ul class="menu">
-            <li><a href="{{ url('/guru/dashboard') }}"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
-            <li><a href="#"><i class="fa-solid fa-calendar-check"></i> Jadwal Mengajar</a></li>
-            <li><a href="#"><i class="fa-solid fa-qrcode"></i> Absensi</a></li>
-            <li><a href="#"><i class="fa-solid fa-file-lines"></i> Nilai Santri</a></li>
-            <li><a href="#"><i class="fa-solid fa-book"></i> Subbab Pelajaran</a></li>
-            <li>
-                <button type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
-                </button>
-            </li>
-        </ul>
+      <ul class="menu">
+    <li><a href="{{ url('/guru/dashboard') }}"><i class="fa-solid fa-border-all"></i> Dashboard</a></li>
+    <li><a href="{{ url('/guru/jadwal') }}"><i class="fa-solid fa-calendar-check"></i> Jadwal Mengajar</a></li>
+    <li><a href="{{ url('/admin/absensi-guru') }}"><i class="fa-solid fa-qrcode"></i> Absensi Guru</a></li>
+    <li><a href="#"><i class="fa-solid fa-file-lines"></i> Kelola Nilai</a></li>
+    <li><a href="#"><i class="fa-solid fa-book"></i> Subbab Pelajaran</a></li>
+    <li>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </button>
+    </li>
+</ul>
     </div>
 
     <!-- KONTEN UTAMA -->

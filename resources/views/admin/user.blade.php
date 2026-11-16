@@ -109,11 +109,15 @@
 
                     @if($tab == 'santri')
                         <td>
-                            <div class="d-flex justify-content-center gap-2">
-                                <button class="btn-icon btn-qr"><i class="fa-solid fa-qrcode"></i></button>
-                                <button class="btn-icon btn-print"><i class="fa-solid fa-print"></i></button>
-                            </div>
-                        </td>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="{{ url('/admin/santri/'.$item->id.'/qr') }}" class="btn-icon btn-qr" target="_blank" title="Lihat QR">
+            <i class="fa-solid fa-qrcode"></i>
+        </a>
+        <a href="{{ url('/admin/santri/'.$item->id.'/qr') }}" class="btn-icon btn-print" target="_blank" title="Cetak QR">
+            <i class="fa-solid fa-print"></i>
+        </a>
+    </div>
+</td>
                     @endif
 
                     <td>
