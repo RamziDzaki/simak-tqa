@@ -7,6 +7,7 @@ use App\Http\Controllers\MataPelajaranController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\RuanganController;
+use App\Http\Controllers\AbsensiGuruController;
 use App\Models\Jadwal;
 use Carbon\Carbon;
 
@@ -65,8 +66,11 @@ Route::delete('/admin/ruangan/{id}', [RuanganController::class, 'destroy'])->mid
 
 // RUTE KELOLA JADWAL
 Route::get('/admin/jadwal', [JadwalController::class, 'index'])->middleware('auth');
-Route::get('/admin/jadwal/{nama_kelas}/atur', [JadwalController::class, 'create'])->middleware('auth');
+Route::get('/admin/jadwal/{id}/atur', [JadwalController::class, 'create'])->middleware('auth');
 Route::post('/admin/jadwal', [JadwalController::class, 'store'])->middleware('auth');
+Route::get('/admin/jadwal/{id}/edit', [JadwalController::class, 'edit'])->middleware('auth');   // <-- TAMBAH INI
+Route::put('/admin/jadwal/{id}', [JadwalController::class, 'update'])->middleware('auth');      // <-- TAMBAH INI
+Route::delete('/admin/jadwal/{id}', [JadwalController::class, 'destroy'])->middleware('auth');
 
 // RUTE LAPORAN
 Route::get('/admin/laporan', function () {
@@ -78,10 +82,12 @@ Route::get('/admin/absensi-santri', function () {
     return view('admin.absensi_santri');
 })->middleware('auth');
 
-// RUTE ABSENSI GURU
-Route::get('/admin/absensi-guru', function () {
-    return view('admin.absensi_guru');
-})->middleware('auth');
+// RUTE ABSENSI GURU (VERSI BARU: Daftar Guru & Detail)
+Route::get('/admin/absensi-guru', [AbsensiGuruController::class, 'daftarGuru'])->middleware('auth');
+Route::get('/admin/absensi-guru/{id}/detail', [AbsensiGuruController::class, 'index'])->middleware('auth');
+Route::get('/admin/absensi-guru/{id}/export', [AbsensiGuruController::class, 'export'])->middleware('auth');
+Route::get('/admin/absensi-guru/{id}/absen', [AbsensiGuruController::class, 'absenHariIni'])->middleware('auth');
+Route::post('/admin/absensi-guru', [AbsensiGuruController::class, 'store'])->middleware('auth');
 
 // RUTE NILAI
 Route::get('/admin/nilai', function () {

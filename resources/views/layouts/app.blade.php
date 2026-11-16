@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+        <!-- Flatpickr CSS & JS (TAMBAHAN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
+
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #9e9e9e; margin: 0; overflow-x: hidden; }
         .sidebar { width: 260px; height: 100vh; background-color: #0b6b4f; color: white; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; z-index: 1000; }
@@ -80,5 +85,8 @@
 
     <!-- Bootstrap JS (PENTING) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Stack untuk Script Tambahan per Halaman -->
+    @stack('scripts')
 </body>
 </html>

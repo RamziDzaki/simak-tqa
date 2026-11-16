@@ -57,7 +57,7 @@
                 <div class="badge-belum mb-2"><i class="fa-regular fa-calendar"></i> Belum di Atur</div>
             @endif
             <br>
-            <a href="{{ url('/admin/jadwal/'.$item->nama_kelas.'/atur') }}" class="btn-atur">Atur Jadwal <i class="fa-solid fa-arrow-right"></i></a>
+            <a href="{{ url('/admin/jadwal/'.$item->id.'/atur') }}" class="btn-atur">Atur Jadwal <i class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
 @empty
