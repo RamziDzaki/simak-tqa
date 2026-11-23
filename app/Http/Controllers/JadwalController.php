@@ -15,9 +15,11 @@ class JadwalController extends Controller
     public function index()
     {
         $kelas = Kelas::all();
+
         foreach ($kelas as $k) {
             $k->jumlah_pertemuan = Jadwal::where('kelas', $k->nama_kelas)->count();
         }
+
         return view('admin.jadwal', compact('kelas'));
     }
 
@@ -27,7 +29,7 @@ class JadwalController extends Controller
         $jadwals = Jadwal::where('kelas', $kelas->nama_kelas)->get();
         $mapels = MataPelajaran::all();
         $gurus = User::where('role', 'guru')->get();
-        
+
         return view('admin.atur_jadwal', compact('kelas', 'jadwals', 'mapels', 'gurus'));
     }
 
@@ -52,6 +54,7 @@ class JadwalController extends Controller
         ]);
 
         $kelas = Kelas::where('nama_kelas', $request->kelas)->first();
+
         return redirect('/admin/jadwal/' . $kelas->id . '/atur')
             ->with('success', 'Jadwal berhasil ditambahkan!');
     }
@@ -59,6 +62,7 @@ class JadwalController extends Controller
     public function edit($id)
     {
         $jadwal = Jadwal::findOrFail($id);
+
         return response()->json($jadwal);
     }
 
@@ -73,6 +77,7 @@ class JadwalController extends Controller
         ]);
 
         $jadwal = Jadwal::findOrFail($id);
+
         $jadwal->update([
             'mata_pelajaran' => $request->mata_pelajaran,
             'guru' => $request->guru,
@@ -87,65 +92,75 @@ class JadwalController extends Controller
     public function destroy($id)
     {
         Jadwal::findOrFail($id)->delete();
+
         return back()->with('success', 'Jadwal berhasil dihapus!');
     }
 
     public function generatePertemuan(Request $request, $id)
     {
         $request->validate([
-            'tgl_mulai' => 'required',
-            'tgl_selesai' => 'required',
+            'tgl_mulai' => 'required|date',
+            'tgl_selesai' => 'required|date|after_or_equal:tgl_mulai',
             'jumlah_pertemuan' => 'required|integer|min:1',
         ]);
 
         $kelas = Kelas::findOrFail($id);
+
         $jadwals = Jadwal::where('kelas', $kelas->nama_kelas)->get();
 
         if ($jadwals->isEmpty()) {
             return back()->with('error', 'Belum ada jadwal untuk kelas ini.');
         }
 
-        foreach ($jadwals as $j) {
-            Pertemuan::where('jadwal_id', $j->id)->delete();
-        }
-
-        // Tangani dua format tanggal (Y-m-d atau format Indonesia)
-        try {
-            $tglMulai = Carbon::parse($request->tgl_mulai);
-        } catch (\Exception $e) {
-            $tglMulai = Carbon::createFromLocaleFormat('l, j F Y', 'id', $request->tgl_mulai);
-        }
-
-        $jumlahPertemuan = $request->jumlah_pertemuan;
+        $tglMulai = Carbon::parse($request->tgl_mulai)->startOfDay();
+        $tglSelesai = Carbon::parse($request->tgl_selesai)->startOfDay();
+        $jumlahPertemuan = (int) $request->jumlah_pertemuan;
 
         foreach ($jadwals as $jadwal) {
-            $hariJadwal = strtolower($jadwal->hari);
-            
+            $hariJadwal = strtolower(trim($jadwal->hari));
+
             $tanggal = $tglMulai->copy();
             $count = 0;
-            while ($count < $jumlahPertemuan) {
-                if (strtolower($tanggal->isoFormat('dddd')) == $hariJadwal) {
+
+            while ($tanggal->lte($tglSelesai) && $count < $jumlahPertemuan) {
+
+                $hariTanggal = strtolower($tanggal->copy()->locale('id')->isoFormat('dddd'));
+
+                if ($hariTanggal === $hariJadwal) {
                     $count++;
-                    Pertemuan::create([
-                        'jadwal_id' => $jadwal->id,
-                        'tanggal' => $tanggal->toDateString(),
-                        'pertemuan_ke' => $count,
-                    ]);
-                    $tanggal->addWeek();
-                } else {
-                    $tanggal->addDay();
+
+                    Pertemuan::updateOrCreate(
+                        [
+                            'jadwal_id' => $jadwal->id,
+                            'pertemuan_ke' => $count,
+                        ],
+                        [
+                            'tanggal' => $tanggal->toDateString(),
+                        ]
+                    );
                 }
+
+                $tanggal->addDay();
+            }
+
+            if ($count < $jumlahPertemuan) {
+                return back()->with(
+                    'error',
+                    'Rentang tanggal tidak cukup untuk menghasilkan seluruh pertemuan pada jadwal ' . $jadwal->hari . '.'
+                );
             }
         }
 
-        return redirect('/admin/jadwal/' . $id . '/daftar-pertemuan')->with('success', 'Jadwal pertemuan berhasil di-generate!');
+        return redirect('/admin/jadwal/' . $id . '/daftar-pertemuan')
+            ->with('success', 'Jadwal pertemuan berhasil di-generate!');
     }
 
     public function daftarPertemuan($id)
     {
         $kelas = Kelas::findOrFail($id);
+
         $jadwals = Jadwal::where('kelas', $kelas->nama_kelas)->get();
-        
+
         $pertemuans = Pertemuan::whereIn('jadwal_id', $jadwals->pluck('id'))
             ->orderBy('tanggal', 'asc')
             ->get();

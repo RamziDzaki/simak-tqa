@@ -5,58 +5,73 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kelas;
 use App\Models\Santri;
+use App\Models\Ruangan;
 
 class KelasController extends Controller
 {
     public function index()
     {
         $kelas = Kelas::all();
-        
-        // Hitung jumlah santri per kelas
+
+        // Hitung jumlah santri pada setiap kelas
         foreach ($kelas as $k) {
-            $k->jumlah_santri = Santri::where('kelas', $k->nama_kelas)->count();
+            $k->jumlah_santri = Santri::where(
+                'kelas',
+                $k->nama_kelas
+            )->count();
         }
 
-        return view('admin.kelas', compact('kelas'));
+        // Ambil data ruangan untuk pilihan form kelas
+        $ruangans = Ruangan::all();
+
+        return view('admin.kelas', compact('kelas', 'ruangans'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_kelas' => 'required',
-            'kapasitas' => 'required|integer',
-            'status' => 'required'
+        $validated = $request->validate([
+            'nama_kelas' => 'required|string|max:255',
+            'ruangan' => 'nullable|exists:ruangans,nama_ruangan',
+            'kapasitas' => 'required|integer|min:1',
+            'status' => 'required|string|max:255',
         ]);
 
-        Kelas::create($request->all());
-        return redirect('/admin/kelas')->with('success', 'Kelas berhasil ditambahkan!');
+        Kelas::create($validated);
+
+        return redirect('/admin/kelas')
+            ->with('success', 'Kelas berhasil ditambahkan!');
     }
 
-    // TAMBAHAN: FUNGSI UNTUK MENAMPILKAN HALAMAN EDIT
     public function edit($id)
     {
         $kelas = Kelas::findOrFail($id);
-        return view('admin.edit_kelas', compact('kelas'));
+        $ruangans = Ruangan::all();
+
+        return view('admin.edit_kelas', compact('kelas', 'ruangans'));
     }
 
-    // TAMBAHAN: FUNGSI UNTUK MENYIMPAN PERUBAHAN (UPDATE)
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama_kelas' => 'required',
-            'kapasitas' => 'required|integer',
-            'status' => 'required'
+        $validated = $request->validate([
+            'nama_kelas' => 'required|string|max:255',
+            'ruangan' => 'nullable|exists:ruangans,nama_ruangan',
+            'kapasitas' => 'required|integer|min:1',
+            'status' => 'required|string|max:255',
         ]);
 
         $kelas = Kelas::findOrFail($id);
-        $kelas->update($request->all());
+        $kelas->update($validated);
 
-        return redirect('/admin/kelas')->with('success', 'Kelas berhasil diupdate!');
+        return redirect('/admin/kelas')
+            ->with('success', 'Kelas berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        Kelas::findOrFail($id)->delete();
-        return redirect('/admin/kelas')->with('success', 'Kelas berhasil dihapus!');
+        $kelas = Kelas::findOrFail($id);
+        $kelas->delete();
+
+        return redirect('/admin/kelas')
+            ->with('success', 'Kelas berhasil dihapus!');
     }
 }

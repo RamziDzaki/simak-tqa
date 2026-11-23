@@ -9,11 +9,13 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    // Menampilkan halaman login
     public function showLogin()
     {
         return view('auth.login');
     }
 
+    // Proses login
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -23,23 +25,28 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             if (Auth::user()->role === 'admin') {
                 return redirect('/admin/dashboard');
             }
+
             return redirect('/guru/dashboard');
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.'])->onlyInput('email');
+        return back()
+            ->withErrors([
+                'email' => 'Email atau password salah.'
+            ])
+            ->onlyInput('email');
     }
 
-    // TAMBAHAN: Tampilkan halaman register
+    // Menampilkan halaman register
     public function showRegister()
     {
         return view('auth.register');
     }
 
-    // TAMBAHAN: Proses pendaftaran
+    // Proses pendaftaran guru
     public function register(Request $request)
     {
         $request->validate([
@@ -52,18 +59,22 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'guru', // Otomatis jadi guru
+            'role' => 'guru',
             'status' => 'Aktif',
         ]);
 
-        return redirect('/login')->with('success', 'Registrasi berhasil! Silakan login.');
+        return redirect('/login')
+            ->with('success', 'Registrasi berhasil! Silakan login.');
     }
 
+    // Proses logout
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/login');
     }
 }
