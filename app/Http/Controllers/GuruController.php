@@ -9,6 +9,7 @@ use App\Models\AbsensiGuru;
 use App\Models\Pertemuan;
 use App\Models\Santri;
 use App\Models\AbsensiSantri;
+use App\Models\Nilai;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -201,5 +202,41 @@ class GuruController extends Controller
         $pertemuans = Pertemuan::where('jadwal_id', $id)->orderBy('pertemuan_ke', 'asc')->get();
 
         return view('guru.absensi_detail', compact('guru', 'jadwal', 'sudah_absen', 'pertemuans'));
+    }
+
+    // --- METHOD UNTUK KELOLA NILAI ---
+
+    public function nilaiIndex()
+    {
+        $guru = Auth::user();
+        $jadwals = Jadwal::where('guru', $guru->name)->get();
+        return view('guru.nilai_index', compact('guru', 'jadwals'));
+    }
+
+    public function nilaiInput($id)
+    {
+        $guru = Auth::user();
+        $jadwal = Jadwal::findOrFail($id);
+        $santris = Santri::where('kelas', $jadwal->kelas)->get();
+        $nilais = Nilai::where('jadwal_id', $id)->get()->keyBy('santri_id');
+
+        return view('guru.nilai_input', compact('guru', 'jadwal', 'santris', 'nilais'));
+    }
+
+    public function nilaiSimpan(Request $request, $id)
+    {
+        $request->validate([
+            'nilai' => 'required|array',
+            'nilai.*' => 'nullable|integer|min:0|max:100',
+        ]);
+
+        foreach ($request->nilai as $santri_id => $nilai) {
+            Nilai::updateOrCreate(
+                ['santri_id' => $santri_id, 'jadwal_id' => $id],
+                ['nilai' => $nilai]
+            );
+        }
+
+        return back()->with('success', 'Nilai berhasil disimpan!');
     }
 }

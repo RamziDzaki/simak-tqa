@@ -117,3 +117,9 @@ Route::get('/guru/absensi', [App\Http\Controllers\GuruController::class, 'absens
 Route::get('/guru/absensi/{id}/absen', [App\Http\Controllers\GuruController::class, 'absenGuru'])->middleware('auth');
 
 Route::get('/guru/absensi/{id}/detail', [App\Http\Controllers\GuruController::class, 'absensiDetail'])->middleware('auth');
+
+
+// RUTE KELOLA NILAI (GURU)
+Route::get('/guru/nilai', [App\Http\Controllers\GuruController::class, 'nilaiIndex'])->middleware('auth');
+Route::get('/guru/nilai/{id}/input', [App\Http\Controllers\GuruController::class, 'nilaiInput'])->middleware('auth');
+Route::post('/guru/nilai/{id}/input', [App\Http\Controllers\GuruController::class, 'nilaiSimpan'])->middleware('auth');
