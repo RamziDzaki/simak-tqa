@@ -37,7 +37,6 @@
     <li><a href="{{ url('/guru/jadwal') }}"><i class="fa-solid fa-calendar-check"></i> Jadwal Mengajar</a></li>
 <li><a href="{{ url('/guru/absensi') }}"><i class="fa-solid fa-user-check"></i> Absensi Guru</a></li>
     <li><a href="#"><i class="fa-solid fa-file-lines"></i> Kelola Nilai</a></li>
-    <li><a href="#"><i class="fa-solid fa-book"></i> Subbab Pelajaran</a></li>
     <li>
         <button type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
