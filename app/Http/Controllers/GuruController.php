@@ -239,4 +239,28 @@ class GuruController extends Controller
 
         return back()->with('success', 'Nilai berhasil disimpan!');
     }
+
+    public function nilaiEdit($jadwal_id, $santri_id)
+    {
+        $guru = Auth::user();
+        $jadwal = Jadwal::findOrFail($jadwal_id);
+        $santri = Santri::findOrFail($santri_id);
+        $nilai = Nilai::where('jadwal_id', $jadwal_id)->where('santri_id', $santri_id)->first();
+
+        return view('guru.nilai_edit', compact('guru', 'jadwal', 'santri', 'nilai'));
+    }
+
+    public function nilaiUpdate(Request $request, $jadwal_id, $santri_id)
+    {
+        $request->validate([
+            'nilai' => 'required|integer|min:0|max:100',
+        ]);
+
+        Nilai::updateOrCreate(
+            ['jadwal_id' => $jadwal_id, 'santri_id' => $santri_id],
+            ['nilai' => $request->nilai]
+        );
+
+        return redirect('/guru/nilai/'.$jadwal_id.'/input')->with('success', 'Nilai berhasil diupdate!');
+    }
 }

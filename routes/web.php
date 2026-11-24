@@ -123,3 +123,6 @@ Route::get('/guru/absensi/{id}/detail', [App\Http\Controllers\GuruController::cl
 Route::get('/guru/nilai', [App\Http\Controllers\GuruController::class, 'nilaiIndex'])->middleware('auth');
 Route::get('/guru/nilai/{id}/input', [App\Http\Controllers\GuruController::class, 'nilaiInput'])->middleware('auth');
 Route::post('/guru/nilai/{id}/input', [App\Http\Controllers\GuruController::class, 'nilaiSimpan'])->middleware('auth');
+
+Route::get('/guru/nilai/{jadwal_id}/edit/{santri_id}', [App\Http\Controllers\GuruController::class, 'nilaiEdit'])->middleware('auth');
+Route::post('/guru/nilai/{jadwal_id}/edit/{santri_id}', [App\Http\Controllers\GuruController::class, 'nilaiUpdate'])->middleware('auth');
